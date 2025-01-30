@@ -3,7 +3,7 @@ import * as amqp from 'amqplib';
 
 @Injectable()
 export class DoctorService {
-  private readonly rabbitmqUri = process.env.RABBITMQ_URL || 'amqp://admin:admin@rabbitmq:5672';  // CloudAMQP or Docker URI
+  private readonly rabbitmqUri = process.env.RABBITMQ_URL;  // CloudAMQP or Docker URI
 
   private async isPrescriptionIdExists(prescriptionId: string) {
     const connection = await amqp.connect(this.rabbitmqUri);
@@ -36,7 +36,7 @@ export class DoctorService {
     await channel.assertQueue(queue, { durable: true });
     channel.sendToQueue(queue, Buffer.from(JSON.stringify(prescription)), { persistent: true });
 
-    console.log(`📩 Prescription Queued: ${JSON.stringify(prescription)}`);
+    console.log(`Prescription Queued: ${JSON.stringify(prescription)}`);
   }
 
   async createPrescription(prescription: any) {
